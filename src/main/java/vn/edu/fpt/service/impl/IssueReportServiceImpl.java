@@ -2,16 +2,24 @@ package vn.edu.fpt.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import vn.edu.fpt.dto.IssueReportDTO;
 import vn.edu.fpt.dto.response.domstaff.ReportDTO;
 import vn.edu.fpt.dto.response.domstaff.ReportDetailDTO;
+import vn.edu.fpt.model.Contract;
 import vn.edu.fpt.model.IssueReport;
+import vn.edu.fpt.model.User;
+import vn.edu.fpt.model.constant.ContractStatus;
+import vn.edu.fpt.model.constant.ReportCategory;
 import vn.edu.fpt.model.constant.ReportStatus;
+import vn.edu.fpt.repository.ContractRepository;
 import vn.edu.fpt.repository.IssueReportRepository;
+import vn.edu.fpt.repository.UserRepository;
 import vn.edu.fpt.service.IssueReportService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -79,12 +87,12 @@ public class IssueReportServiceImpl implements IssueReportService {
     public void updateReportStatusAndNote(Long id, ReportStatus status, String staffNote) {
         IssueReport report = issueReportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu"));
-        
+
         report.setStatus(status);
         report.setStaffNote(staffNote);
-        
-        issueReportRepository.save(report);
 
+        issueReportRepository.save(report);
+    }
 
     @Override
     @Transactional(readOnly = true)

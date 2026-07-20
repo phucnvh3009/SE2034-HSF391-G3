@@ -17,14 +17,14 @@ public class ListReportController {
     @RequestMapping("/reports")
     public String list(Model model){
         model.addAttribute("reports", issueReportService.getAllIssueReports());
-        return "domstaff/student/StudentRequestList";
+        return "views/domstaff/student/StudentRequestList";
     }
     @GetMapping("/requests/detail/{id}")
     public String viewRequestDetail(@PathVariable("id") Long id, Model model) {
         ReportDetailDTO report = issueReportService.getIssueReportById(id);
         model.addAttribute("report", report);
 
-        return "domstaff/student/RequestDetail";
+        return "views/domstaff/student/RequestDetail";
     }
     @PostMapping("/requests/detail/{id}")
     public String updateRequest(@PathVariable("id") Long id,
