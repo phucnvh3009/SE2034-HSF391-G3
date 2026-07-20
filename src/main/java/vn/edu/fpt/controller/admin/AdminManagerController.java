@@ -24,7 +24,7 @@ public class AdminManagerController {
     public String showManagersList(Model model) {
         List<ManagerDTO> managers = dormManagementService.getAllManagers();
         model.addAttribute("managers", managers);
-        return "views/admin/listManager";
+        return "admin/listManager";
     }
 
     @GetMapping("/create")
@@ -32,7 +32,7 @@ public class AdminManagerController {
         if (!model.containsAttribute("newManager")) {
             model.addAttribute("newManager", new ManagerRequest());
         }
-        return "views/admin/addManager";
+        return "admin/addManager";
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class AdminManagerController {
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "Thông tin nhập vào không hợp lệ. Vui lòng kiểm tra lại!");
-            return "views/admin/addManager";
+            return "admin/addManager";
         }
 
         try {
@@ -51,7 +51,7 @@ public class AdminManagerController {
             return "redirect:/admin/listManager";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "views/admin/addManager";
+            return "admin/addManager";
         }
     }
 
@@ -60,7 +60,7 @@ public class AdminManagerController {
         try {
             ManagerDTO manager = dormManagementService.getManagerById(id);
             model.addAttribute("manager", manager);
-            return "views/admin/viewManager";
+            return "admin/viewManager";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/admin/listManager";
@@ -79,8 +79,10 @@ public class AdminManagerController {
         }
 
         if (redirectDetail) {
+
             return "redirect:/admin/listManager/" + id;
         }
+
         return "redirect:/admin/listManager";
     }
 }
