@@ -8,5 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface SemesterRepository extends JpaRepository<Semester, Long> {
+
+    // Lấy kỳ học đang hoạt động
     Optional<Semester> findByIsActiveTrue();
 }

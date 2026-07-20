@@ -25,17 +25,17 @@ public class AuthController {
     @GetMapping("/login")
     public String showLoginForm(Model model, HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
-
         if (currentUser != null) {
             String redirectUrl = getRedirectUrlForUser(currentUser);
             if (!redirectUrl.equals("redirect:/login")) {
                 return redirectUrl;
             }
         }
+
         if (!model.containsAttribute("loginRequest")) {
             model.addAttribute("loginRequest", new LoginRequest());
         }
-        return "auth/login";
+        return "views/auth/login";
     }
 
     @PostMapping("/login")
@@ -44,27 +44,28 @@ public class AuthController {
                                HttpSession session,
                                Model model) {
         if (bindingResult.hasErrors()) {
-            return "auth/login";
+            return "views/auth/login";
         }
 
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Email đăng nhập không tồn tại!");
-            return "auth/login";
+            return "views/auth/login";
         }
+
         User user = userOpt.get();
 
         if (!user.getPasswordHash().equals(request.getPassword())) {
             model.addAttribute("errorMessage", "Mật khẩu không chính xác!");
-            return "auth/login";
+            return "views/auth/login";
         }
 
         if (user.getIsActive() == null || !user.getIsActive()) {
             model.addAttribute("errorMessage", "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!");
-            return "auth/login";
+            return "views/auth/login";
         }
-        session.setAttribute("currentUser", user);
 
+        session.setAttribute("currentUser", user);
         return getRedirectUrlForUser(user);
     }
 
@@ -75,7 +76,6 @@ public class AuthController {
     }
 
     private String getRedirectUrlForUser(User user) {
-
         boolean isAdmin = user.getUserRoles().stream()
                 .anyMatch(ur -> ur.getRole().getRoleName() == RoleName.ROLE_ADMIN);
         boolean isManager = user.getUserRoles().stream()
@@ -84,7 +84,7 @@ public class AuthController {
                 .anyMatch(ur -> ur.getRole().getRoleName() == RoleName.ROLE_STUDENT);
 
         if (isAdmin) {
-            return "redirect:/admin/managers";
+            return "redirect:/admin/listManager";
         } else if (isManager) {
             return "redirect:/manager/dashboard";
         } else if (isStudent) {
