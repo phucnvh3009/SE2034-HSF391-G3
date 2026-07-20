@@ -23,14 +23,14 @@ public class UtilityUsageController {
     public String listUtilityUsages(Model model) {
         List<UtilityUsageListDTO> usages = utilityUsageService.getAllUtilityUsages();
         model.addAttribute("usages", usages);
-        return "domstaff/UtilityUsageList";
+        return "views/domstaff/UtilityUsageList";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
 //        model.addAttribute("rooms", roomService.getAllRooms());
         model.addAttribute("reqDTO", new UtilityUsageCreateReqDTO());
-        return "domstaff/UtilityUsageCreate";
+        return "views/domstaff/UtilityUsageCreate";
     }
 
     @PostMapping("/create")

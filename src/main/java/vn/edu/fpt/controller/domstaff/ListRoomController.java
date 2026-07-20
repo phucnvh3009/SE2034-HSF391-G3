@@ -32,7 +32,7 @@ public class ListRoomController {
         model.addAttribute("totalPages", roomPage.getTotalPages());
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedStatus", status);
-        return "domstaff/room/RoomList";
+        return "views/domstaff/room/RoomList";
     }
 
     @GetMapping("/rooms/detail/{id}")
@@ -40,6 +40,6 @@ public class ListRoomController {
        RoomDetailDTO roomDetail = roomService.getRoomDetailById(id);
         model.addAttribute("roomDetail", roomDetail);
         
-        return "domstaff/room/RoomDetail";
+        return "views/domstaff/room/RoomDetail";
     }
 }
