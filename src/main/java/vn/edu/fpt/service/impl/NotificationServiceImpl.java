@@ -25,49 +25,20 @@ public class NotificationServiceImpl implements NotificationService {
     private DormitoryBuildingRepository dormitoryBuildingRepository;
     private UserRepository userRepository;
     private NotificationRepository notificationRepository;
-    private static final List<NotificationDTO> NOTIFICATIONS = Arrays.asList(
-        new NotificationDTO(1L,
-            "Nhắc nhở hóa đơn",
-            "Hóa đơn HD-2024-0089 số tiền 4.292.000đ đến hạn ngày 15/07/2024.",
-            "payment", "2 giờ trước", false),
-
-        new NotificationDTO(2L,
-            "Cúp nước",
-            "Khu vực ký túc xá sẽ cúp nước ngày 28/06/2024 từ 9:00 - 12:00 để bảo trì.",
-            "announcement", "Hôm qua", false),
-
-        new NotificationDTO(3L,
-            "Cập nhật phiếu sửa chữa #PR-0042",
-            "Yêu cầu sửa điều hòa đang được xử lý. Kỹ thuật viên: Anh Sơn.",
-            "maintenance", "2 ngày trước", false),
-
-        new NotificationDTO(4L,
-            "Cập nhật nội quy",
-            "Nội quy về khách thăm được cập nhật - khách chỉ được vào trước 22:00.",
-            "system", "3 ngày trước", true),
-
-        new NotificationDTO(5L,
-            "Xác nhận thanh toán",
-            "Thanh toán 4.190.000đ cho hóa đơn HD-2024-0088 đã được xác nhận.",
-            "payment", "1 tuần trước", true),
-
-        new NotificationDTO(6L,
-            "Diễn tập phòng cháy - 30/06",
-            "Diễn tập phòng cháy chữa cháy bắt buộc tại Tòa B lúc 14:00 ngày 30/06/2024.",
-            "announcement", "1 tuần trước", true)
-    );
 
     @Override
-    public List<NotificationDTO> getAllNotifications() {
-        return NOTIFICATIONS;
+    public List<NotificationDTO> getNotificationsForUser(User user) {
+        Long buildingId = user.getBuilding() != null ? user.getBuilding().getId() : -1L;
+        List<Notification> notifications = notificationRepository.findNotificationsForUser(buildingId, user.getId());
+        return notifications.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<NotificationDTO> getNotificationsByType(String type) {
+    public List<NotificationDTO> getNotificationsByTypeAndUser(String type, User user) {
         if (type == null || type.isBlank()) {
-            return getAllNotifications();
+            return getNotificationsForUser(user);
         }
-        return NOTIFICATIONS.stream()
+        return getNotificationsForUser(user).stream()
                 .filter(n -> n.getType().equalsIgnoreCase(type))
                 .collect(Collectors.toList());
     }
@@ -80,8 +51,10 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setCategory(dto.getCategory());
         notification.setSender(sender);
         notification.setTargetType(dto.getTargetType());
-        DormitoryBuilding dom = dormitoryBuildingRepository.findById(sender.getBuilding().getId()).orElseThrow(() -> new RuntimeException("Không tìm thấy tòa nhà với ID: " + sender.getBuilding().getId()));
-        notification.setTargetBuilding(dom);
+        if (sender.getBuilding() != null) {
+            DormitoryBuilding dom = dormitoryBuildingRepository.findById(sender.getBuilding().getId()).orElseThrow(() -> new RuntimeException("Không tìm thấy tòa nhà với ID: " + sender.getBuilding().getId()));
+            notification.setTargetBuilding(dom);
+        }
         if (dto.getStudentCode() != null && !dto.getStudentCode().isBlank()) {
             User student = userRepository.findByStudentCode(dto.getStudentCode()).orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên với mã: " + dto.getStudentCode()));
             notification.setTargetStudent(student);
@@ -90,9 +63,28 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public long countUnread() {
-        return NOTIFICATIONS.stream()
-                .filter(n -> !n.isRead())
-                .count();
+    public long countUnread(User user) {
+        // Tạm thời đếm tổng số thông báo vì chưa có bảng trạng thái read
+        return getNotificationsForUser(user).size();
+    }
+
+    private NotificationDTO mapToDTO(Notification n) {
+        NotificationDTO dto = new NotificationDTO();
+        dto.setId(n.getId());
+        dto.setTitle(n.getTitle());
+        dto.setContent(n.getContent());
+        dto.setType(n.getCategory() != null ? n.getCategory().name() : "system");
+
+        if (n.getCreatedAt() != null) {
+            java.time.Duration duration = java.time.Duration.between(n.getCreatedAt(), java.time.Instant.now());
+            if (duration.toDays() > 0) dto.setTimeAgo(duration.toDays() + " ngày trước");
+            else if (duration.toHours() > 0) dto.setTimeAgo(duration.toHours() + " giờ trước");
+            else if (duration.toMinutes() > 0) dto.setTimeAgo(duration.toMinutes() + " phút trước");
+            else dto.setTimeAgo("Vừa xong");
+        } else {
+            dto.setTimeAgo("N/A");
+        }
+        dto.setRead(false);
+        return dto;
     }
 }

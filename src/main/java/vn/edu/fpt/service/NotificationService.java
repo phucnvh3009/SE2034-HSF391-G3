@@ -8,9 +8,8 @@ import java.util.List;
 
 public interface NotificationService {
 
-    List<NotificationDTO> getAllNotifications();
-
-    List<NotificationDTO> getNotificationsByType(String type);
+    List<NotificationDTO> getNotificationsForUser(User user);
+    List<NotificationDTO> getNotificationsByTypeAndUser(String type, User user);
     void sendNotification(Notification4StaffDto dto, User sender);
-    long countUnread();
+    long countUnread(User user);
 }

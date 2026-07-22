@@ -27,10 +27,10 @@ public class NotificationController {
             return "redirect:/login";
         }
 
-        List<NotificationDTO> notifications = notificationService.getAllNotifications();
+        List<NotificationDTO> notifications = notificationService.getNotificationsForUser(currentUser);
 
         model.addAttribute("notifications", notifications);
-        model.addAttribute("unreadCount", notificationService.countUnread());
+        model.addAttribute("unreadCount", notificationService.countUnread(currentUser));
         model.addAttribute("userDisplayName", currentUser.getFullName());
 
         return "views/notification/index";
