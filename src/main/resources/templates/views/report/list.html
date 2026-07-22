@@ -144,9 +144,9 @@
             Xin chào, <strong th:text="${userDisplayName}">Sinh viên</strong>
         </div>
         <ul class="sidebar-menu">
-            <li><a th:href="@{/student/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/notifications}">🔔 Thông báo</a></li>
-            <li><a th:href="@{/student/reports}" class="active">🛠️ Báo cáo sự cố</a></li>
+            <li><a th:href="@{/student/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/notifications}">Thông báo</a></li>
+            <li><a th:href="@{/student/reports}" class="active">Báo cáo sự cố</a></li>
             <li style="margin-top: auto; padding-top: 20px; border-top: 1px solid #374151;">
                 <a th:href="@{/logout}" style="color: #f87171;"><span class="icon">🚪</span> Đăng xuất</a>
             </li>
@@ -160,7 +160,7 @@
                 <h1>Báo Cáo Sự Cố</h1>
                 <p class="subtitle" style="margin-bottom: 0;">Quản lý và theo dõi các sự cố phòng ở</p>
             </div>
-            <a th:href="@{/student/reports/create}" class="btn-create">✍️ Gửi báo cáo mới</a>
+            <a th:href="@{/student/reports/create}" class="btn-create">Gửi báo cáo mới</a>
         </div>
 
         <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
@@ -179,9 +179,9 @@
                 </div>
 
                 <div class="report-meta">
-                    <span>🏢 Phòng: <strong th:text="${r.roomName}"></strong></span>
-                    <span>📂 Phân loại: <strong th:text="${r.categoryName}"></strong></span>
-                    <span>📅 Ngày gửi: <span th:text="${r.createdAt}"></span></span>
+                    <span>Phòng: <strong th:text="${r.roomName}"></strong></span>
+                    <span>Phân loại: <strong th:text="${r.categoryName}"></strong></span>
+                    <span>Ngày gửi: <span th:text="${r.createdAt}"></span></span>
                 </div>
 
                 <div class="report-desc" th:text="${r.description}"></div>
