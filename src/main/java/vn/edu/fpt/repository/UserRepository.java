@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.userRoles ur LEFT JOIN FETCH ur.role WHERE u.email = :email")
     Optional<User> findByEmail(@Param("email") String email);
 
@@ -29,5 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> searchManagers(@Param("roleName") RoleName roleName,
                               @Param("keyword") String keyword,
                               @Param("status") Boolean status);
-
+    @Query("SELECT u FROM User u WHERE u.studentProfile.studentCode = :studentCode")
+    Optional<User> findByStudentCode(@Param("studentCode") String studentCode);
 }

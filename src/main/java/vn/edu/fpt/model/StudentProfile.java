@@ -48,6 +48,8 @@ public class StudentProfile extends BaseAuditEntity {
     private String parentPhone; // Số điện thoại phụ huynh để liên hệ khẩn cấp
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "student_status", length = 20, nullable = false)
+    @Column(name = "student_status", length = 20
+//            , nullable = false
+    )
     private StudentStatus studentStatus = StudentStatus.ACTIVE; // Trạng thái mặc định là ACTIVE khi kích hoạt thành công
 }
