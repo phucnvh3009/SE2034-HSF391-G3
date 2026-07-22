@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface IssueReportRepository extends JpaRepository<IssueReport, Long> {
 
-    // Tìm tất cả báo cáo sự cố của sinh viên theo ID
+    //heo ID
     List<IssueReport> findByStudentIdOrderByCreatedAtDesc(Long studentId);
 }
