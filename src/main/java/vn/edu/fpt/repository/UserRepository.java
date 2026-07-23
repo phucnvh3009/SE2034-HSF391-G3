@@ -12,7 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.userRoles ur LEFT JOIN FETCH ur.role WHERE u.email = :email")
+    @Query("SELECT u FROM User u " +
+            "LEFT JOIN FETCH u.userRoles ur " +
+            "LEFT JOIN FETCH ur.role " +
+            "WHERE u.email = :email")
     Optional<User> findByEmail(@Param("email") String email);
 
     @Query("SELECT u FROM User u JOIN u.userRoles ur JOIN ur.role r WHERE r.roleName = :roleName")
@@ -20,8 +23,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByUserRoles_Role_RoleName(RoleName roleName);
 
-    @Query("SELECT u FROM User u JOIN u.userRoles ur JOIN ur.role r WHERE r.roleName = :roleName AND u.building.id = :buildingId AND (:keyword IS NULL OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND (:status IS NULL OR u.isActive = :status)")
-    List<User> searchStaffsByBuildingIdAndKeywordAndStatus(@Param("buildingId") Long buildingId, @Param("roleName") RoleName roleName, @Param("keyword") String keyword, @Param("status") Boolean status);
+    @Query("SELECT u FROM User u " +
+            "JOIN u.userRoles ur " +
+            "JOIN ur.role r " +
+            "WHERE r.roleName = :roleName " +
+            "AND u.building.id = :buildingId " +
+            "AND (:keyword IS NULL OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:status IS NULL OR u.isActive = :status)")
+    List<User> searchStaffsByBuildingIdAndKeywordAndStatus(@Param("buildingId") Long buildingId,
+                                                           @Param("roleName") RoleName roleName,
+                                                           @Param("keyword") String keyword,
+                                                           @Param("status") Boolean status);
 
     @Query("SELECT u FROM User u JOIN u.userRoles ur JOIN ur.role r " +
             "WHERE r.roleName = :roleName " +
@@ -33,6 +47,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> searchManagers(@Param("roleName") RoleName roleName,
                               @Param("keyword") String keyword,
                               @Param("status") Boolean status);
+
     @Query("SELECT u FROM User u WHERE u.studentProfile.studentCode = :studentCode")
     Optional<User> findByStudentCode(@Param("studentCode") String studentCode);
 }

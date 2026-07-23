@@ -27,8 +27,8 @@ public class OccupancyServiceImpl implements OccupancyService {
     @Override
     @Transactional(readOnly = true)
     public OccupancyDTO getOccupancyByManagerId(Long managerId) {
-        User manager = userRepository.findById(managerId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy quản lý."));
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy quản lý."));
+
         DormitoryBuilding building = manager.getBuilding();
         if (building == null) {
             throw new IllegalArgumentException("Không tìm thấy tòa nhà do quản lý này phụ trách.");
