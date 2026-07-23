@@ -39,5 +39,4 @@ public class DormitoryBuilding extends BaseAuditEntity {
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Floor> floors = new HashSet<>();
-
 }
